@@ -67,7 +67,7 @@ class PokemonTableTest extends TestCase
     }
 
     /**
-     * Update existing Pokemon.
+     * Delete existing Pokemon.
      *
      * @return void
      */
@@ -124,7 +124,7 @@ class PokemonTableTest extends TestCase
     }
 
     /**
-     * Testing if pokemons inserted
+     * Testing if pokemons inserted with massive and same pokemons
      *
      * @expectedException Exception
      */
