@@ -18,8 +18,8 @@ class CreatePokemonsTable extends Migration
     {
         Schema::create(PokemonsContract::TABLE_NAME, function (Blueprint $table) {
             $table->increments(PokemonsContract::COLUMN_ID);
-            $table->string(PokemonsContract::COLUMN_NAME, 20);
-            $table->string(PokemonsContract::COLUMN_URL, 100);
+            $table->string(PokemonsContract::COLUMN_NAME, 200);
+            $table->string(PokemonsContract::COLUMN_URL, 200);
 
             $table->timestamp(PokemonsContract::COLUMN_CREATED_AT)
                 ->default(DB::raw("CURRENT_TIMESTAMP"));
