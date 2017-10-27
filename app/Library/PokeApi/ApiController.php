@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Pavlos
- * Date: 10/27/2017
- * Time: 6:23 PM
- */
 
 namespace App\Library\PokeApi;
 
@@ -14,16 +8,23 @@ class ApiController
 {
 
     /**
+     * Tha number of pokemon in pokeapi
+     *
+     * @var int
+     */
+    public $totalPokemons = 0;
+
+    /**
      * Recursive function to handle pokemons
      *
-     * @param $endpoint
      * @param int $offset
      * @param int $limit
      *
      * @return array
      */
-    public function getPokemonList($endpoint, $offset = 0, $limit = 200)
+    public function getPokemonList($offset = 0, $limit = 200)
     {
+        $endpoint = PokeApiUtilities::API_BASE_URL . PokeApiUtilities::ENDPOINT_POKEMON;
         $url = $endpoint . "?" . PokeApiUtilities::PARAM_OFFSET . "=" . $offset;
         $url .= "&" . PokeApiUtilities::PARAM_LIMIT . "=" . $limit;
 
@@ -42,12 +43,12 @@ class ApiController
 
         $response = json_decode($responseJson, true);
         $data = $response[PokeApiUtilities::RESPONSE_POKEMON_RESULTS];
-
+        $this->totalPokemons = $response[PokeApiUtilities::RESPONSE_POKEMON_COUNT];
         $next = $response[PokeApiUtilities::RESPONSE_POKEMON_NEXT];
         if(is_null($next)){
             return $data;
         }
 
-        return array_merge($data, $this->getPokemonList($endpoint, $offset + $limit, $limit));
+        return array_merge($data, $this->getPokemonList($offset + $limit, $limit));
     }
 }
