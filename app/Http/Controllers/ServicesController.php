@@ -3,11 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Jobs\PokemonHunterJob;
-use App\Library\Database\PokemonProfilesContract;
+use App\Jobs\PokemonProfile;
 use App\Library\Database\PokemonsContract;
-use App\Library\PokeApi\ApiController;
-use App\Library\PokeApi\PokeApiUtilities;
-use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use DB;
 
@@ -21,111 +18,24 @@ class ServicesController extends Controller
         PokemonHunterJob::dispatch();
     }
 
+    /*
+    * Action to start Pokemon Profile Jobs
+     *
+     * Get all pokemons to check and send to jobs per 50 urls
+    */
     public function pokemonProfiles()
     {
-        echo "Pokemon profiles";
+        $pokemonsToCheck = DB::table(PokemonsContract::TABLE_NAME)
+            ->select(PokemonsContract::COLUMN_URL)
+            ->whereNull(PokemonsContract::COLUMN_UPDATED_AT)
+            ->get();
 
-        $pokemonEndpoint = "https://pokeapi.co/api/v2/pokemon/128/";
+        $pokemonsToCheckArray = $pokemonsToCheck->toArray();
+        $pokemonsToCheckArray = array_chunk($pokemonsToCheckArray, 50);
 
-        $apiController = new ApiController();
-
-        $profileData = $apiController->getPokemonProfile($pokemonEndpoint);
-        $this->checkAndSaveProfile($profileData);
-
-
-    }
-
-    /**
-     * Check the profile if have criteria to pass and then saved it
-     *
-     * To save pokemon profile must have height >= 50 and
-     * sprites->front_default exists
-     *
-     * @param $profileData
-     */
-    protected function checkAndSaveProfile($profileData)
-    {
-        if(empty($profileData)){
-            return;
-        }
-
-        $pokemonProfileName = $profileData[PokeApiUtilities::RESPONSE_PROFILE_NAME];
-
-        //Set updated time to not check again for this pokemon
-        DB::table(PokemonsContract::TABLE_NAME)
-            ->where(PokemonsContract::COLUMN_NAME, $pokemonProfileName)
-            ->update([PokemonsContract::COLUMN_UPDATED_AT => Date("Y/m/d H:i:s", time())]);
-
-        $pokemonProfileHeight = $profileData[PokeApiUtilities::RESPONSE_PROFILE_HEIGHT];
-        if($pokemonProfileHeight < 50){
-            return;
-        }
-
-        $pokemonProfileSprites = $profileData[PokeApiUtilities::RESPONSE_PROFILE_SPRITES];
-
-        if (!isset($pokemonProfileSprites[PokeApiUtilities::RESPONSE_PROFILE_SPRITES_FRONT_DEFAULT])) {
-            return;
-        }
-
-        if(empty($pokemonProfileSprites[PokeApiUtilities::RESPONSE_PROFILE_SPRITES_FRONT_DEFAULT])){
-            return;
-        }
-
-        $pokemonProfileImage = $pokemonProfileSprites[PokeApiUtilities::RESPONSE_PROFILE_SPRITES_FRONT_DEFAULT];
-
-        /**
-         * Bind data
-         */
-        $pokemonProfileForms = $profileData[PokeApiUtilities::RESPONSE_PROFILE_FORMS];
-        $pokemonProfileAbilities = $profileData[PokeApiUtilities::RESPONSE_PROFILE_ABILITIES];
-        $pokemonProfileStats = $profileData[PokeApiUtilities::RESPONSE_PROFILE_STATS];
-        $pokemonProfileWeight = $profileData[PokeApiUtilities::RESPONSE_PROFILE_WEIGHT];
-        $pokemonProfileMoves = $profileData[PokeApiUtilities::RESPONSE_PROFILE_MOVES];
-        $pokemonProfileHeldItems = $profileData[PokeApiUtilities::RESPONSE_PROFILE_HELD_ITEMS];
-        $pokemonProfileLocationAreaEnc = $profileData[PokeApiUtilities::RESPONSE_PROFILE_LOCATION_AREA_ENCOUNTERS];
-        $pokemonProfileIsDefault = $profileData[PokeApiUtilities::RESPONSE_PROFILE_IS_DEFAULT];
-        $pokemonProfileSpecies = $profileData[PokeApiUtilities::RESPONSE_PROFILE_SPECIES];
-        $pokemonProfileId = $profileData[PokeApiUtilities::RESPONSE_PROFILE_ID];
-        $pokemonProfileOrder = $profileData[PokeApiUtilities::RESPONSE_PROFILE_ORDER];
-        $pokemonProfileGameIndices = $profileData[PokeApiUtilities::RESPONSE_PROFILE_GAME_INDICES];
-        $pokemonProfileBaseExp = $profileData[PokeApiUtilities::RESPONSE_PROFILE_BASE_EXPERIENCE];
-        $pokemonProfileTypes = $profileData[PokeApiUtilities::RESPONSE_PROFILE_TYPES];
-
-        $pokemonProfileAttributes = array(
-            $pokemonProfileForms,
-            $pokemonProfileAbilities,
-            $pokemonProfileStats,
-            $pokemonProfileMoves,
-            $pokemonProfileHeldItems,
-            $pokemonProfileLocationAreaEnc,
-            $pokemonProfileIsDefault,
-            $pokemonProfileSpecies,
-            $pokemonProfileOrder,
-            $pokemonProfileGameIndices,
-            $pokemonProfileTypes,
-            $pokemonProfileSprites
-        );
-
-        $dataToInsert = array(
-            PokemonProfilesContract::COLUMN_ID => $pokemonProfileId,
-            PokemonProfilesContract::COLUMN_NAME => $pokemonProfileName,
-            PokemonProfilesContract::COLUMN_IMAGE => $pokemonProfileImage,
-            PokemonProfilesContract::COLUMN_HEIGHT => $pokemonProfileHeight,
-            PokemonProfilesContract::COLUMN_WEIGHT => $pokemonProfileWeight,
-            PokemonProfilesContract::COLUMN_BASE_EXPERIENCE => $pokemonProfileBaseExp,
-            PokemonProfilesContract::COLUMN_ATTRIBUTES => json_encode($pokemonProfileAttributes)
-        );
-
-        try{
-            $inserted = DB::table(PokemonProfilesContract::TABLE_NAME)->insert($dataToInsert);
-        } catch (QueryException $e){
-            $inserted = false;
-        }
-
-        if($inserted){
-            echo "inserted";
-        } else {
-            echo "error on insert";
+        foreach ($pokemonsToCheckArray as $pokemonToSend){
+            PokemonProfile::dispatch($pokemonToSend);
         }
     }
+
 }
