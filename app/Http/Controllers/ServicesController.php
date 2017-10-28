@@ -14,4 +14,9 @@ class ServicesController extends Controller
     {
         PokemonHunterJob::dispatch();
     }
+
+    public function pokemonProfiles()
+    {
+        echo  "Pokemon profiles";
+    }
 }
