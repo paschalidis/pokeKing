@@ -19,6 +19,7 @@ class PokemonProfile implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     protected $pokemonsToCheck;
+    protected $totalInserted;
 
     /**
      * Create a new job instance.
@@ -28,6 +29,7 @@ class PokemonProfile implements ShouldQueue
     public function __construct($pokemonsTocheck)
     {
         $this->pokemonsToCheck = $pokemonsTocheck;
+        $this->totalInserted = 0;
     }
 
     /**
@@ -43,6 +45,8 @@ class PokemonProfile implements ShouldQueue
             $pokemonProfile = $apiController->getPokemonProfile($pokemon->url);
             $this->checkAndSaveProfile($pokemonProfile);
         }
+        echo "Total Inserted: " . $this->totalInserted . "\n";
+        echo "Pokemon Profile End.\n";
     }
 
     /**
@@ -62,9 +66,13 @@ class PokemonProfile implements ShouldQueue
         $pokemonProfileName = $profileData[PokeApiUtilities::RESPONSE_PROFILE_NAME];
 
         //Set updated time to not check again for this pokemon
-        DB::table(PokemonsContract::TABLE_NAME)
-            ->where(PokemonsContract::COLUMN_NAME, $pokemonProfileName)
-            ->update([PokemonsContract::COLUMN_UPDATED_AT => Date("Y/m/d H:i:s", time())]);
+        try{
+            DB::table(PokemonsContract::TABLE_NAME)
+                ->where(PokemonsContract::COLUMN_NAME, $pokemonProfileName)
+                ->update([PokemonsContract::COLUMN_UPDATED_AT => Date("Y/m/d H:i:s", time())]);
+        } catch (QueryException $e){
+            echo $e . "\n";
+        }
 
         $pokemonProfileHeight = $profileData[PokeApiUtilities::RESPONSE_PROFILE_HEIGHT];
         if($pokemonProfileHeight < 50){
@@ -129,14 +137,21 @@ class PokemonProfile implements ShouldQueue
         try{
             $inserted = DB::table(PokemonProfilesContract::TABLE_NAME)->insert($dataToInsert);
         } catch (QueryException $e){
+            echo $e . "\n";
             $inserted = false;
         }
 
-        // Set it to null to retry next time
         if(!$inserted){
-            DB::table(PokemonsContract::TABLE_NAME)
-                ->where(PokemonsContract::COLUMN_NAME, $pokemonProfileName)
-                ->update([PokemonsContract::COLUMN_UPDATED_AT => null]);
+            $this->totalInserted ++;
+        } else {
+            // Set it to null to retry next time
+            try{
+                DB::table(PokemonsContract::TABLE_NAME)
+                    ->where(PokemonsContract::COLUMN_NAME, $pokemonProfileName)
+                    ->update([PokemonsContract::COLUMN_UPDATED_AT => null]);
+            } catch (QueryException $e){
+                echo $e . "\n";
+            }
         }
     }
 }

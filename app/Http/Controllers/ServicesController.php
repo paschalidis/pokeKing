@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Jobs\PokemonHunterJob;
 use App\Jobs\PokemonProfile;
 use App\Library\Database\PokemonsContract;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use DB;
 
@@ -34,7 +35,8 @@ class ServicesController extends Controller
         $pokemonsToCheckArray = array_chunk($pokemonsToCheckArray, 50);
 
         foreach ($pokemonsToCheckArray as $pokemonToSend){
-            PokemonProfile::dispatch($pokemonToSend);
+            PokemonProfile::dispatch($pokemonToSend)
+            ->delay(Carbon::now()->addMinutes(1));
         }
     }
 
