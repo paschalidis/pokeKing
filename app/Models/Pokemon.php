@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use App\Library\Database\PokemonProfilesContract;
-use Illuminate\Database\Eloquent\Model;
 
 /**
  * App\Models\Pokemon
@@ -27,7 +26,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Pokemon whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Pokemon whereWeight($value)
  */
-class Pokemon extends Model
+class Pokemon extends \Eloquent
 {
     /**
      * The table associated with the model.
