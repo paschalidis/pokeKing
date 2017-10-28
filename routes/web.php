@@ -16,3 +16,4 @@ Route::get('/', function () {
 });
 
 Route::get('hunter/', 'ServicesController@pokemonHunter');
+Route::get('profiles/', 'ServicesController@pokemonProfiles');
