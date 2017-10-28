@@ -10,6 +10,7 @@ class PokemonController extends Controller
     //
     public function pokemonList()
     {
-        return view('list', ["name" => "Makis"]);
+        $pokemons = array(1,2,3);
+        return view('list', ["pokemons" => $pokemons]);
     }
 }

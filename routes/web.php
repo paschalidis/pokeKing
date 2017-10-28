@@ -11,11 +11,7 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
-Route::get('list/', 'PokemonController@pokemonList');
+Route::get('/', 'PokemonController@pokemonList');
 
 Route::get('hunter/', 'ServicesController@pokemonHunter');
 Route::get('profiles/', 'ServicesController@pokemonProfiles');
