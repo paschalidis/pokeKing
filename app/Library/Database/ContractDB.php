@@ -30,6 +30,7 @@ interface PokemonProfilesContract
     const COLUMN_HEIGHT = "height";
     const COLUMN_BASE_EXPERIENCE ="base_experience";
     const COLUMN_ATTRIBUTES = "attributes";
+    const COLUMN_ATTRIBUTES_BASE_STAT = "base_stat";
     const COLUMN_CREATED_AT = "created_at";
     const COLUMN_UPDATED_AT = "updated_at";
 }
