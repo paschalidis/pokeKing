@@ -60,13 +60,13 @@
                 PokeKing
             </div>
             <div class="card-block">
-                <img id="pokeKingImage" class="card-img-top" style="width: -moz-fit-content;" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10007.png" alt="Card image cap">
+                <img id="pokeKingImage" class="card-img-top" style="width: -moz-fit-content;" src="" alt="Pokemon image cap">
             </div>
             <div class="card-block">
-                <h4 id="pokeKingName" class="card-title">giratina-origin</h4>
+                <h4 id="pokeKingName" class="card-title"></h4>
             </div>
             <ul class="list-group list-group-flush">
-                <li id="pokeKingStats" class="list-group-item">Stats: 343</li>
+                <li id="pokeKingStats" class="list-group-item"></li>
             </ul>
         </div>
     </div>
