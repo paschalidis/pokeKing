@@ -51,6 +51,9 @@
             </table>
         </div>
     </div>
+    <div class="row">
+        <button type="button" class="btn btn-info btn-lg">PokeKing</button>
+    </div>
 </div>
 </body>
 </html>
