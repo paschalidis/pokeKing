@@ -54,7 +54,7 @@
     <div class="row">
         <button id="pokeKing" type="button" class="btn btn-info btn-lg">PokeKing</button>
     </div>
-    <div class="row justify-content-md-center">
+    <div class="row justify-content-md-center" style="padding: 50px;">
         <div class="card hidden-xl-down" style="width: 20rem;">
             <div class="card-header">
                 PokeKing
