@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Library\Database\PokemonProfilesContract;
 use App\Models\Pokemon;
 use Illuminate\Http\Request;
+use DB;
 
 
 class PokemonController extends Controller
@@ -26,5 +27,37 @@ class PokemonController extends Controller
             ->get($selectColumns);
 
         return view('list', ["pokemons" => $pokemons]);
+    }
+
+    /**
+     * Function to calculate the pokeKing pokemon
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function pokemonKing()
+    {
+        $rawSelect = PokemonProfilesContract::COLUMN_IMAGE . "," . PokemonProfilesContract::COLUMN_NAME;
+        $rawSelect .= ", JSON_EXTRACT(" . PokemonProfilesContract::COLUMN_ATTRIBUTES . ", '$**." . PokemonProfilesContract::COLUMN_ATTRIBUTES_BASE_STAT . "') AS base_stats";
+
+        $pokemons = DB::table(PokemonProfilesContract::TABLE_NAME)
+            ->select(DB::raw($rawSelect))
+            ->get();
+
+        $pokeKing = array();
+        $maxBaseStats = 0;
+        foreach ($pokemons as $pokemon){
+
+            $baseStatsSum = array_sum(json_decode($pokemon->base_stats, true));
+            if($baseStatsSum > $maxBaseStats){
+                $pokeKing = array(
+                    PokemonProfilesContract::COLUMN_IMAGE => $pokemon->image,
+                    PokemonProfilesContract::COLUMN_NAME => $pokemon->name,
+                    "stats" => $baseStatsSum
+                );
+                $maxBaseStats = $baseStatsSum;
+            }
+        }
+
+        return response()->json($pokeKing);
     }
 }
