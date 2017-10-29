@@ -23,18 +23,18 @@
                     <tr>
                         <th>Image</th>
                         <th>Name</th>
+                        <th>Base Exp</th>
                         <th>Height</th>
                         <th>Weight</th>
-                        <th>Base Exp</th>
                     </tr>
                 </thead>
                 <tfoot class="thead-inverse">
                 <tr>
                     <th>Image</th>
                     <th>Name</th>
+                    <th>Base Exp</th>
                     <th>Height</th>
                     <th>Weight</th>
-                    <th>Base Exp</th>
                 </tr>
                 </tfoot>
                 <tbody>
@@ -42,9 +42,9 @@
                     <tr>
                         <td><img src="{{ $pokemon->image }}" alt="{{ $pokemon->name }}" class="img-fluid"></td>
                         <td>{{ $pokemon->name }}</td>
+                        <td>{{ $pokemon->base_experience }}</td>
                         <td>{{ $pokemon->height }}</td>
                         <td>{{ $pokemon->weight }}</td>
-                        <td>{{ $pokemon->base_experience }}</td>
                     </tr>
                 @endforeach
                 </tbody>
