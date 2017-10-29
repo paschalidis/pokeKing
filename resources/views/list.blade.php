@@ -8,12 +8,17 @@
     <title>PokeKing</title>
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css">
 </head>
 <body>
 <div class="container">
     <!-- Content here -->
     <div class="row">
-            <table id="example" class="table table-striped table-bordered" width="100%" cellspacing="0">
+        <h1>Pokemon Profiles</h1>
+    </div>
+    <div class="row">
+        <div class="table-responsive" style="overflow-x: hidden;">
+            <table id="pokemon_list" class="table table-striped table-bordered" width="100%" cellspacing="0">
                 <thead class="thead-inverse">
                     <tr>
                         <th>Image</th>
@@ -23,6 +28,15 @@
                         <th>Base Exp</th>
                     </tr>
                 </thead>
+                <tfoot class="thead-inverse">
+                <tr>
+                    <th>Image</th>
+                    <th>Name</th>
+                    <th>Height</th>
+                    <th>Weight</th>
+                    <th>Base Exp</th>
+                </tr>
+                </tfoot>
                 <tbody>
                 @foreach($pokemons as $pokemon)
                     <tr>
@@ -35,11 +49,24 @@
                 @endforeach
                 </tbody>
             </table>
+        </div>
     </div>
 </div>
+</body>
+</html>
 <!-- jQuery first, then Tether, then Bootstrap JS. -->
 <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
-</body>
-</html>
+<script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+<script>
+    $(document).ready(function(){
+        $('#pokemon_list').DataTable(
+            {
+                "pageLength": 5,
+                "lengthMenu": [ 5, 10, 15, 20 ],
+                "scrollX": false
+            }
+        );
+    });
+</script>
