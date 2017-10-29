@@ -27,4 +27,9 @@ class PokemonController extends Controller
 
         return view('list', ["pokemons" => $pokemons]);
     }
+
+    public function pokemonKing()
+    {
+        echo "Pokemon King";
+    }
 }

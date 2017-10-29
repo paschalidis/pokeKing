@@ -15,3 +15,4 @@ Route::get('/', 'PokemonController@pokemonList');
 
 Route::get('hunter/', 'ServicesController@pokemonHunter');
 Route::get('profiles/', 'ServicesController@pokemonProfiles');
+Route::get('king/', 'PokemonController@pokemonKing');
