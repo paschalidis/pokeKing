@@ -52,7 +52,7 @@ class PokemonController extends Controller
                 $pokeKing = array(
                     PokemonProfilesContract::COLUMN_IMAGE => $pokemon->image,
                     PokemonProfilesContract::COLUMN_NAME => $pokemon->name,
-                    "Total Stats" => $baseStatsSum
+                    "stats" => $baseStatsSum
                 );
                 $maxBaseStats = $baseStatsSum;
             }

@@ -52,13 +52,30 @@
         </div>
     </div>
     <div class="row">
-        <button type="button" class="btn btn-info btn-lg">PokeKing</button>
+        <button id="pokeKing" type="button" class="btn btn-info btn-lg">PokeKing</button>
+    </div>
+    <div class="row justify-content-md-center" style="padding: 50px;">
+        <div class="card hidden-xl-down" style="width: 20rem;">
+            <div class="card-header">
+                PokeKing
+            </div>
+            <div class="card-block">
+                <img id="pokeKingImage" class="card-img-top" style="width: -moz-fit-content;" src="" alt="Pokemon image cap">
+            </div>
+            <div class="card-block">
+                <h4 id="pokeKingName" class="card-title"></h4>
+            </div>
+            <ul class="list-group list-group-flush">
+                <li id="pokeKingStats" class="list-group-item"></li>
+            </ul>
+        </div>
     </div>
 </div>
 </body>
 </html>
 <!-- jQuery first, then Tether, then Bootstrap JS. -->
 <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
 <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
@@ -71,5 +88,20 @@
                 "scrollX": false
             }
         );
+
+        $("#pokeKing").click(function(e) {
+            $.ajax({
+                type: "GET",
+                url: "/king/",
+                success: function(response){
+
+                    $('.card').removeClass("hidden-xl-down");
+
+                    $('#pokeKingImage').attr("src", response.image);
+                    $('#pokeKingName').text(response.name);
+                    $('#pokeKingStats').text("Stats: " + response.stats);
+                }
+            });
+        });
     });
 </script>
