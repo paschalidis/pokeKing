@@ -51,4 +51,32 @@ class ApiController
 
         return array_merge($data, $this->getPokemonList($offset + $limit, $limit));
     }
+
+    /**
+     * Function to handle pokemon profile data
+     *
+     * @param $pokemonEndpoint
+     * @return array
+     */
+    public function getPokemonProfile($pokemonEndpoint)
+    {
+        $response = array();
+
+        $ch = curl_init();
+        $timeout = 10;
+        curl_setopt($ch, CURLOPT_URL, $pokemonEndpoint);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
+        $responseJson = curl_exec($ch);
+        $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+        if ($http_code != Response::HTTP_OK) {
+            return $response;
+        }
+
+        $response = json_decode($responseJson, true);
+
+        return $response;
+    }
 }
