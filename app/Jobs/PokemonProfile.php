@@ -141,7 +141,7 @@ class PokemonProfile implements ShouldQueue
             $inserted = false;
         }
 
-        if(!$inserted){
+        if($inserted){
             $this->totalInserted ++;
         } else {
             // Set it to null to retry next time
